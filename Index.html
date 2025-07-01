@@ -1,0 +1,1320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kunal Sugandhi - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a2e; }
+        ::-webkit-scrollbar-thumb { background: #7e22ce; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9333ea; }
+
+        /* Smooth scrolling behavior for the .content-wrapper */
+        .content-wrapper { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; } /* Fallback, but primary is .content-wrapper */
+
+        body {
+            background-color: #000000; /* Deep black background */
+            color: #e0e0e0; /* Light gray text for contrast */
+            overflow-x: hidden; /* Prevent horizontal scrolling on body */
+            overflow-y: hidden; /* Prevent body scroll, .content-wrapper handles it */
+            font-family: 'Roboto', sans-serif; /* Default font */
+        }
+        /* Headings and specific elements font */
+        h1, h2, h3, h4, h5, h6, .btn-primary, .section-title, .btn-gemini, .btn-download {
+            font-family: 'Poppins', sans-serif; /* Poppins for emphasis */
+        }
+
+        /* Three.js canvas container styling */
+        #three-canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 0; /* Behind all other content */
+            overflow: hidden; /* Ensure no overflow from canvas */
+        }
+
+        /* --- NEW HEADER STYLES --- */
+        #new-cool-header {
+            position: fixed; /* Keep header at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Above other content but below modals */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            background-color: rgba(10, 5, 20, 0.85); /* Dark, slightly transparent Blueish */
+            backdrop-filter: blur(12px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(12px); /* Safari support for backdrop-filter */
+            border-bottom: 1px solid rgba(126, 34, 206, 0.35); /* Subtle Blue border */
+            color: white; /* Text color */
+            transform: translateY(-150%); /* Start off-screen for animation */
+            opacity: 0; /* Start transparent for animation */
+            animation: coolHeaderAppear 0.5s 0.1s cubic-bezier(0.23, 1, 0.32, 1) forwards; /* Entry animation */
+            font-family: 'Poppins', sans-serif; /* Ensure Poppins font for header elements */
+        }
+
+        /* Keyframes for header entry animation */
+        @keyframes coolHeaderAppear {
+            0% {
+                transform: translateY(-150%);
+                opacity: 0;
+            }
+            70% {
+                transform: translateY(8px); /* Slight bounce effect */
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Styling for new navigation links (desktop) */
+        .new-nav-link {
+            position: relative; /* For ::after pseudo-element positioning */
+            padding: 0.25rem 0; /* Equivalent to py-1 */
+            color: #e0e0e0; /* Light gray text */
+            font-weight: 500; /* Medium font weight */
+            font-size: 0.95rem; /* Slightly smaller than default */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s ease, font-weight 0.3s ease; /* Smooth transition */
+            opacity: 0; /* Start transparent for staggered animation */
+            transform: translateY(-10px); /* Start slightly above for staggered animation */
+        }
+
+        /* Animate nav links when header is loaded */
+        #new-cool-header.loaded nav .new-nav-link {
+            animation: navLinkFadeIn 0.4s ease forwards;
+        }
+        /* Staggering delays for individual nav links */
+        #new-cool-header.loaded nav .new-nav-link:nth-child(1) { animation-delay: 0.1s; }
+        #new-cool-header.loaded nav .new-nav-link:nth-child(2) { animation-delay: 0.15s; }
+        #new-cool-header.loaded nav .new-nav-link:nth-child(3) { animation-delay: 0.2s; }
+        #new-cool-header.loaded nav .new-nav-link:nth-child(4) { animation-delay: 0.25s; }
+        #new-cool-header.loaded nav .new-nav-link:nth-child(5) { animation-delay: 0.3s; }
+        #new-cool-header.loaded nav .new-nav-link:nth-child(6) { animation-delay: 0.35s; }
+
+        /* Keyframes for nav link fade-in animation */
+        @keyframes navLinkFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Underline effect for desktop nav links on hover */
+        .new-nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0; /* Start with no width */
+            height: 2px; /* Underline thickness */
+            bottom: -5px; /* Position below the text */
+            left: 50%; /* Center the underline */
+            transform: translateX(-50%); /* Correct centering */
+            background-color: #a855f7; /* Blue underline color */
+            transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1); /* Smooth width transition */
+        }
+
+        .new-nav-link:hover {
+            color: #f3e8ff; /* Lighter Blue on hover */
+        }
+
+        .new-nav-link:hover::after {
+            width: 100%; /* Expand underline to full width on hover */
+        }
+        
+        /* Styling for the mobile menu container */
+        #mobile-menu-new {
+            background-color: rgba(10, 5, 20, 0.95); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(126, 34, 206, 0.25); 
+        }
+        /* Styling for mobile navigation links */
+        .new-nav-link-mobile { 
+            color: #e0e0e0;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease, font-weight 0.3s ease; 
+            display: block; 
+            padding: 0.75rem 1rem; 
+            text-align: center; 
+        }
+        .new-nav-link-mobile:hover {
+            background-color: rgba(126, 34, 206, 0.2); 
+            color: #f3e8ff; 
+        }
+
+        /* --- Active Link Styles --- */
+        .new-nav-link.active-link {
+            color: #c084fc; /* A distinct Blue, brighter than default hover */
+            font-weight: 600; /* Slightly bolder */
+        }
+        .new-nav-link.active-link::after {
+            width: 70%; /* Show a partial underline for active, full for hover */
+            background-color: #a855f7;
+        }
+        /* If hover and active, hover takes precedence for full underline */
+        .new-nav-link.active-link:hover::after {
+            width: 100%;
+        }
+        .new-nav-link-mobile.active-link {
+            background-color: rgba(126, 34, 206, 0.25); /* Consistent with mobile hover */
+            color: #e9d5ff; /* Brighter Blue text */
+            font-weight: 600;
+        }
+        /* --- End of Active Link Styles --- */
+        /* --- END OF NEW HEADER STYLES --- */
+        
+        /* Main content wrapper styling */
+        .content-wrapper {
+            position: relative; z-index: 1; width: 100%;
+            overflow-y: auto; /* This is the main scroller */
+            padding-top: 70px; /* Space for fixed header - ensure this matches header height */
+            height: 100vh; /* Full viewport height */
+        }
+        /* General styling for content sections */
+        .content-section {
+            position: relative; z-index: 1; padding: 3rem 1rem; min-height: auto; 
+        }
+        /* Specific styling for the home section */
+        #home.content-section { 
+             min-height: calc(100vh - 70px); 
+             display: flex; 
+             align-items: center; justify-content: center; 
+        }
+
+        /* Primary button styling */
+        .btn-primary {
+            background-color: #7e22ce; color: white;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #9333ea; transform: scale(1.05) translateY(-2px); 
+            box-shadow: 0 8px 15px rgba(126, 34, 206, 0.4); 
+        }
+        
+        /* Breathing animation for buttons */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 10px rgba(126, 34, 206, 0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 6px 15px rgba(126, 34, 206, 0.5); }
+        }
+        .btn-breathing { animation: breathe 3s ease-in-out infinite; }
+
+        /* Glow effect for text */
+        .text-glow { text-shadow: 0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.6); }
+        /* Section title styling and animation */
+        .section-title {
+            font-size: 2.5rem; font-weight: 700; margin-bottom: 2.5rem; 
+            color: #c084fc; 
+            text-align: center;
+            opacity: 0; transform: translateY(30px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-title.is-visible { opacity: 1; transform: translateY(0); } 
+
+        /* Responsive adjustments for section titles and padding */
+        @media (min-width: 768px) { /* md breakpoint */
+            .section-title { font-size: 3.25rem; }
+            .content-section { padding: 5rem 2rem; }
+        }
+        /* Hide mobile menu button on larger screens */
+        @media (min-width: 768px) { #mobile-menu-button-new { display: none; } }
+
+        /* Card and content block animation styling */
+        .project-card, .about-content, .contact-form-container, .experience-card { 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, opacity 0.5s ease-out; /* Removed display transition */
+            opacity: 0; transform: translateY(50px) scale(0.95); 
+        }
+        .project-card.is-visible, .about-content.is-visible, .contact-form-container.is-visible, .experience-card.is-visible { 
+            opacity: 1; transform: translateY(0) scale(1); 
+        }
+        .project-card:hover, .experience-card:hover { 
+            transform: translateY(-12px) scale(1.03); 
+            box-shadow: 0 15px 30px rgba(126, 34, 206, 0.35); 
+        }
+
+        /* Skill Card Specific Styling for Cloud */
+        .skill-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, opacity 0.5s ease-out;
+            opacity: 0; 
+            transform: translateY(50px) scale(0.95); 
+            margin: 0.5rem; 
+        }
+        .skill-card.is-visible { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .skill-card:hover { 
+            transform: translateY(-10px) scale(1.1); 
+            box-shadow: 0 10px 25px rgba(126, 34, 206, 0.45); 
+        }
+
+        @keyframes float-subtle-1 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(1deg); }
+        }
+        @keyframes float-subtle-2 {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(-3px) translateX(-2px) rotate(-0.5deg); }
+            75% { transform: translateY(3px) translateX(2px) rotate(0.5deg); }
+        }
+        @keyframes float-subtle-3 {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(4px) scale(1.02); }
+        }
+
+        .skill-card.is-visible {
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+1) { animation-name: float-subtle-1; animation-duration: 6s; }
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+2) { animation-name: float-subtle-2; animation-duration: 7s; transform-origin: center bottom;}
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+3) { animation-name: float-subtle-3; animation-duration: 5s; animation-direction: alternate; }
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+4) { animation-name: float-subtle-1; animation-duration: 6.5s; animation-direction: reverse; transform-origin: center center;}
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+5) { animation-name: float-subtle-2; animation-duration: 5.5s; animation-direction: alternate-reverse; }
+        .skill-cloud-container .skill-card.is-visible:nth-child(6n+6) { animation-name: float-subtle-3; animation-duration: 7.5s; }
+
+        /* Staggered animation for child elements */
+        .stagger-animate > * {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
+        }
+        .stagger-animate.is-visible > * { opacity: 1; transform: translateY(0); }
+        .stagger-animate.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+        .stagger-animate.is-visible > *:nth-child(2) { transition-delay: 0.1s; }
+        /* ... other stagger delays ... */
+        .stagger-animate.is-visible > *:nth-child(16) { transition-delay: 0.8s; }
+        .stagger-animate.is-visible > *:nth-child(17) { transition-delay: 0.85s; }
+
+
+        /* Back to top button styling */
+        #backToTopBtn {
+            position: fixed; bottom: 30px; right: 30px; z-index: 100; 
+            background-color: #7e22ce; color: white;
+            border: none; border-radius: 50%; 
+            width: 50px; height: 50px; font-size: 24px; cursor: pointer;
+            opacity: 0; visibility: hidden; transform: translateY(20px); 
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        #backToTopBtn:hover { background-color: #9333ea; transform: translateY(15px) scale(1.1); } 
+        #backToTopBtn.show { opacity: 1; visibility: visible; transform: translateY(0); } 
+        
+        /* Footer icon styling */
+        .footer-icon { color: #9ca3af; transition: transform 0.3s ease, color 0.3s ease; }
+        .footer-icon:hover { transform: scale(1.2); color: #a855f7; } 
+        
+        /* Styling for lists within experience cards */
+        .experience-card ul { list-style-type: disc; margin-left: 1.5rem; color: #b0b0b0; }
+        .experience-card ul li { margin-bottom: 0.5rem; }
+
+        /* Glassmorphism effect for cards */
+        .glassmorphism { 
+            background: rgba(20, 15, 35, 0.6); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(126, 34, 206, 0.25); 
+        }
+
+        /* Gemini Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; opacity: 0; visibility: hidden; 
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; } 
+        .modal-content {
+            background-color: #1a1a2e; 
+            padding: 2rem; border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 90%; max-width: 600px; 
+            max-height: 80vh; overflow-y: auto; 
+            transform: scale(0.95); 
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); } 
+        .modal-title {
+            font-size: 1.75rem; 
+            color: #c084fc; margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .btn-gemini { 
+            background: linear-gradient(90deg, #7e22ce, #a855f7); 
+            color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem;
+            font-weight: 600; transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            cursor: pointer;
+        }
+        .btn-gemini:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 12px rgba(126, 34, 206, 0.4); }
+        .btn-gemini:disabled {
+            background: #581c87; 
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .btn-close-modal { 
+            background-color: #4a0e89; color: #e0e0e0;
+            padding: 0.5rem 1rem; border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .btn-close-modal:hover { background-color: #581c87; }
+        
+        #geminiResponseContainer .idea-card {
+            background-color: rgba(255,255,255,0.05); 
+            padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;
+            border-left: 3px solid #a855f7; 
+        }
+        #geminiResponseContainer .idea-title {
+            font-size: 1.25rem; color: #d8b4fe; margin-bottom: 0.5rem; font-weight: 500;
+        }
+        #geminiResponseContainer .idea-description { color: #b0b0b0; font-size: 0.95rem; }
+        
+        .loader {
+            border: 4px solid #3b0764; 
+            border-top: 4px solid #a855f7; 
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite; 
+            margin: 1rem auto; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- CUSTOM CURSOR PARTICLE STYLES --- */
+        .cursor-particle {
+            position: fixed; 
+            left: 0; 
+            top: 0;  
+            border-radius: 50%;
+            pointer-events: none; 
+            opacity: 0.7;
+            transform: translate(-50%, -50%); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            z-index: 9999; 
+            mix-blend-mode: screen; 
+        }
+        /* --- END OF CURSOR PARTICLE STYLES --- */
+
+        /* --- KONAMI CODE EASTER EGG STYLES --- */
+        @keyframes konami-wiggle-effect {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-4deg) scale(1.05); }
+            40% { transform: rotate(4deg) scale(1.05); }
+            60% { transform: rotate(-4deg) scale(1.05); }
+            80% { transform: rotate(4deg) scale(1.05); }
+        }
+
+        .konami-name-effect {
+            display: inline-block; 
+            animation: konami-wiggle-effect 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1; 
+            text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 25px #00ffcc, 0 0 35px #00ffcc;
+            transition: text-shadow 0.1s ease-in-out; 
+        }
+        /* --- END OF KONAMI CODE STYLES --- */
+
+        /* --- PROJECT FILTER BUTTON STYLES --- */
+        .filter-button {
+            background-color: rgba(126, 34, 206, 0.2); 
+            color: #e0e0e0;
+            border: 1px solid rgba(126, 34, 206, 0.5);
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 0.375rem; 
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+        }
+        .filter-button:hover {
+            background-color: rgba(126, 34, 206, 0.4);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .filter-button.active {
+            background-color: #7e22ce; 
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(126, 34, 206, 0.5);
+        }
+        /* --- END OF PROJECT FILTER STYLES --- */
+        .project-card-hidden {
+            display: none !important; 
+        }
+
+         /* --- SECTION ENTRY ANIMATION --- */
+        @keyframes section-payload-entry {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .navigated-to-section-effect .section-entry-payload {
+            animation: section-payload-entry 0.65s 0.15s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        .section-entry-payload { 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
+        }
+        .content-section:not(.navigated-to-section-effect).is-visible .section-entry-payload {
+             opacity: 1; 
+             transform: translateY(0) scale(1);
+             animation: none; 
+        }
+
+    </style>
+</head>
+<body class="antialiased"> 
+
+    <div id="three-canvas-container"></div>
+
+    <header id="new-cool-header">
+        <div class="container mx-auto flex justify-center md:justify-center items-center px-4 sm:px-6 py-3 relative">
+            <nav class="hidden md:flex space-x-5 lg:space-x-6">
+                <a href="#home" class="new-nav-link">Home</a>
+                <a href="#about" class="new-nav-link">About</a>
+                <a href="#experience" class="new-nav-link">Experience</a>
+                <a href="#projects" class="new-nav-link">Projects</a>
+                <a href="#skills" class="new-nav-link">Skills</a>
+                <a href="#contact" class="new-nav-link">Contact</a>
+            </nav>
+            <button id="mobile-menu-button-new" class="md:hidden text-white focus:outline-none z-10 absolute right-4 top-1/2 transform -translate-y-1/2">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu-new" class="hidden md:hidden absolute top-full left-0 right-0 shadow-xl">
+            <a href="#home" class="new-nav-link-mobile">Home</a>
+            <a href="#about" class="new-nav-link-mobile">About</a>
+            <a href="#experience" class="new-nav-link-mobile">Experience</a>
+            <a href="#projects" class="new-nav-link-mobile">Projects</a>
+            <a href="#skills" class="new-nav-link-mobile">Skills</a>
+            <a href="#contact" class="new-nav-link-mobile">Contact</a>
+        </div>
+    </header>
+    
+    <div class="content-wrapper">
+        <section id="home" class="relative text-center content-section overflow-hidden">
+            <div class="section-entry-payload"> 
+                <div class="relative z-10 p-6 rounded-lg">
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-4 text-glow">
+                        <span class="text-white animate-fade-in-down block" style="animation-delay: 0.2s;">Hello, I'm</span>
+                        <span id="hero-name" class="text-Blue-400 animate-fade-in-down block" style="animation-delay: 0.5s;">Kunal Sugandhi</span>
+                    </h1>
+                    <p class="text-xl md:text-3xl text-gray-300 mb-8 animate-fade-in-up" style="animation-delay: 0.8s;">
+                        Cybersecurity Enthusiast & UI/UX Designer
+                    </p>
+                    <a href="#projects" class="btn-primary btn-breathing font-semibold py-3 px-8 rounded-lg text-lg animate-fade-in-up" style="animation-delay: 1.1s;">
+                        View My Work
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <div class="section-entry-payload">
+                <div class="container mx-auto px-4 md:px-0">
+                    <h2 class="section-title animate-on-scroll">About Me</h2>
+                    <div class="max-w-3xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-8 about-content animate-on-scroll">
+                        <div class="w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-Blue-500 flex-shrink-0 shadow-xl">
+                             <img src="https://placehold.co/240x240/000000/7e22ce?text=KS" alt="Kunal Sugandhi" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/240x240/000000/FFFFFF?text=Error'; this.onerror=null;"/>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <p class="text-lg mb-4 text-gray-300 leading-relaxed">
+                                A highly motivated and versatile undergraduate specializing in Cyber Security at SRM University, Chennai, with a robust foundation in programming, penetration testing, and cryptography. I possess hands-on experience in developing advanced file encryption tools, implementing two-factor authentication systems, and automating web vulnerability assessments.
+                            <p class="text-lg mb-4 text-gray-300 leading-relaxed">
+                                In addition to my technical expertise, I am proficient in web and UI/UX design, with a strong commitment to creating secure and user-centric digital solutions. My professional experience is further enriched by internships in SEO, digital marketing, and social media strategy, enabling me to integrate technical security measures with effective digital communication.
+                            </p>
+                            <p class="text-lg text-gray-300 leading-relaxed">
+                               Recognized for my leadership in university-level design competitions, I am dedicated to continuous learning and innovation in the rapidly evolving field of cyber security. I strive to leverage my multidisciplinary skills to address complex security challenges and deliver impactful, secure, and intuitive digital experiences.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="content-section">
+            <div class="section-entry-payload">
+                <div class="container mx-auto px-4 md:px-0">
+                    <h2 class="section-title animate-on-scroll">Internship Experience</h2>
+                    <div class="space-y-12"> 
+                        <div class="experience-card glassmorphism p-6 md:p-8 rounded-lg shadow-lg animate-on-scroll">
+                            <h3 class="text-2xl md:text-3xl font-semibold mb-2 text-Blue-300">Intern</h3>
+                            <p class="text-lg text-Blue-400 mb-1">Farm Direct 24</p>
+                            <p class="text-md text-gray-400 mb-4">FEB 2024 – MAR 2024
+</p>
+                            <ul class="text-gray-300 leading-relaxed">
+                                <li>Evaluated a task force project to enhance front office operations, identifying key areas for process improvement and increased efficiency.</li>
+                                <li>Supervised daily shift activities and ensured team adherence to standard operating procedures, maintaining consistent service quality and compliance.</li>
+                            </ul>
+                        </div>
+                        <div class="experience-card glassmorphism p-6 md:p-8 rounded-lg shadow-lg animate-on-scroll">
+                            <h3 class="text-2xl md:text-3xl font-semibold mb-2 text-Blue-300">SEO Intern</h3>
+                            <p class="text-lg text-Blue-400 mb-1">EMS Digital</p>
+                            <p class="text-md text-gray-400 mb-4">APR 2024 – JUN 2024</p>
+                            <ul class="text-gray-300 leading-relaxed">
+                                <li>Conducted keyword research and optimized website content to enhance search engine rankings.</li>
+                                <li>Analyzed performance metrics to develop and refine SEO strategies, collaborating on both on-page and off-page optimization techniques.</li>
+                                <li>Improved analytical and technical skills in digital marketing and search engine optimization, contributing to measurable growth in online visibility</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-card glassmorphism p-6 md:p-8 rounded-lg shadow-lg animate-on-scroll">
+                            <h3 class="text-2xl md:text-3xl font-semibold mb-2 text-Blue-300">Social Media Intern</h3>
+                            <p class="text-lg text-Blue-400 mb-1">Flow My Business</p>
+                            <p class="text-md text-gray-400 mb-4">Aug 2024 – Oct 2024</p>
+                            <ul class="text-gray-300 leading-relaxed">
+                                <li>Developed social media strategies to boost brand awareness across platforms such as Facebook, Instagram, and LinkedIn.</li>
+                                <li>Created engaging content and worked closely with the marketing team to execute promotional activities.</li>
+                                <li>Analyzed campaign metrics to evaluate performance, gaining valuable insights into digital marketing and brand management.</li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="projects" class="content-section">
+            <div class="section-entry-payload">
+                <div class="container mx-auto px-4 md:px-0">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                        <h2 class="section-title animate-on-scroll !text-center sm:!text-left !mb-0">My Projects</h2>
+                        <button id="openGeminiModalBtn" class="btn-gemini whitespace-nowrap">
+                            <i class="fas fa-lightbulb"></i> Spark a New Project Idea ✨
+                        </button>
+                    </div>
+
+                    <div id="project-filter-buttons" class="flex flex-wrap justify-center gap-2 mb-10">
+                        <button class="filter-button active" data-filter="all">All</button>
+                        <button class="filter-button" data-filter="CyberSecurity">Cyber Security</button>
+                        <button class="filter-button" data-filter="UI/UX">UI/UX</button>
+                         
+                    </div>
+
+                    <div id="project-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animate">
+                         <div class="project-card glassmorphism p-6 rounded-lg shadow-lg animate-on-scroll" data-tags="CyberSecurity">
+                            <h3 class="text-2xl font-semibold mb-3 text-Blue-300">Crypter File Encryption</h3>
+                            <p class="text-gray-400 mb-4 leading-relaxed">This Python-based application enhances file security by implementing robust encryption and decryption mechanisms. Leveraging advanced cryptographic algorithms, it facilitates secure browser-based messaging between users while safeguarding sensitive data against unauthorized access.</p>
+                            <span class="inline-block bg-Blue-700 hover:bg-Blue-600 text-white text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full transition-colors">Python</span>
+                        </div>
+                        <div class="project-card glassmorphism p-6 rounded-lg shadow-lg animate-on-scroll" data-tags="CyberSecurity">
+                            <h3 class="text-2xl font-semibold mb-3 text-Blue-300">2FA Implementation with Django</h3>
+                            <p class="text-gray-400 mb-4 leading-relaxed">This project implements two-factor authentication (2FA) using the Django framework to enhance account security. It generates time-based one-time passwords (TOTP) and seamlessly integrates with existing authentication systems, offering users flexibility to choose between SMS, email, or authenticator apps for verification. By adding an extra layer of protection, it significantly reduces the risk of unauthorized account access.</p>
+                            <span class="inline-block bg-Blue-700 hover:bg-Blue-600 text-white text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full transition-colors">HTML</span>
+                            <span class="inline-block bg-Blue-700 hover:bg-Blue-600 text-white text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full transition-colors">Django</span>
+                        </div>
+                        <div class="project-card glassmorphism p-6 rounded-lg shadow-lg animate-on-scroll" data-tags="CyberSecurity">
+                            <h3 class="text-2xl font-semibold mb-3 text-Blue-300">Web Vulnerability Assessment Automation </h3>
+                            <p class="text-gray-400 mb-4 leading-relaxed">This automation tool leverages shell scripting to streamline web vulnerability assessments by employing scanners like OWASP ZAP, Nikto, and Nmap. It systematically identifies critical vulnerabilities—including SQL injection, XSS, and CSRF—and generates detailed reports, significantly reducing manual effort while enhancing security posture.</p>
+                            <span class="inline-block bg-Blue-700 hover:bg-Blue-600 text-white text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full transition-colors">shell</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="content-section">
+            <div class="section-entry-payload">
+                <div class="container mx-auto px-4 md:px-0">
+                    <h2 class="section-title animate-on-scroll">Technical Skills</h2>
+                    <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-4 text-center stagger-animate skill-cloud-container">
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fab fa-python"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Python</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                             <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fab fa-html5"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200"> HTML+CSS</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-paint-brush"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">UI/UX Design</h3>
+                        </div>
+                         <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fab fa-linux"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Linux</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-vials"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Software Testing</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-search-dollar"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">SEO</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-ad"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Social Media Marketing</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-shield-alt"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">SOC (Security Operations Center)</h3>
+                        </div>
+                         <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-user-secret"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Penetration Testing</h3>
+                        </div>
+                         <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-user-ninja"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Social Engineering & OSINT</h3>
+                        </div>
+                         <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-bug"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Vulnerability Assessment</h3>
+                        </div>
+                         <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-lock"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Cryptography</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-magic"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">After Effects</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-flag"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Bug Bounty & Responsible Disclosure</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-tools"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Security Tools</h3>
+                        </div>
+                        <div class="skill-card glassmorphism p-4 md:p-6 rounded-lg animate-on-scroll">
+                            <div class="text-4xl md:text-5xl mb-2 md:mb-3 text-Blue-400"><i class="fas fa-microchip"></i></div>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-200">Digital Forensics</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="content-section">
+            <div class="section-entry-payload">
+                <div class="container mx-auto px-4 md:px-0">
+                    <h2 class="section-title animate-on-scroll">Get In Touch</h2>
+                    <div class="max-w-xl mx-auto glassmorphism p-8 rounded-lg shadow-xl contact-form-container animate-on-scroll">
+                        <p class="text-center text-lg text-gray-300 mb-6 leading-relaxed">
+                           I’m always happy to explore new projects or collaborations. Feel free to reach out anytime!
+                        </p>
+                        <form action="https://formspree.io/f/xrbkjjdb" method="POST"> 
+                            <div class="mb-5">
+                                <label for="name" class="block mb-2 text-sm font-medium text-Blue-300">Your Name</label>
+                                <input type="text" id="name" name="name" class="w-full p-3 rounded-lg bg-gray-800 border border-Blue-700 focus:ring-Blue-500 focus:border-Blue-500 text-white placeholder-gray-500" placeholder="John Doe" required>
+                            </div>
+                            <div class="mb-5">
+                                <label for="email" class="block mb-2 text-sm font-medium text-Blue-300">Your Email</label>
+                                <input type="email" id="email" name="_replyto" class="w-full p-3 rounded-lg bg-gray-800 border border-Blue-700 focus:ring-Blue-500 focus:border-Blue-500 text-white placeholder-gray-500" placeholder="john.doe@example.com" required>
+                            </div>
+                            <div class="mb-5">
+                                <label for="message" class="block mb-2 text-sm font-medium text-Blue-300">Message</label>
+                                <textarea id="message" name="message" rows="4" class="w-full p-3 rounded-lg bg-gray-800 border border-Blue-700 focus:ring-Blue-500 focus:border-Blue-500 text-white placeholder-gray-500" placeholder="Your message..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary w-full font-semibold py-3 px-6 rounded-lg text-lg">
+                                Send Message
+                            </button>
+                        </form>
+                         <p class="text-center text-xs text-gray-500 mt-4">Contact form powered by Formspree.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-12 text-center bg-black border-t border-Blue-800">
+            <div class="container mx-auto">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-semibold text-Blue-400 mb-4">Connect With Me</h3>
+                    <div class="flex justify-center space-x-6">
+                        <a href="https://www.linkedin.com/in/kunal-sugandhi" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-Blue-500 footer-icon" aria-label="LinkedIn Profile">
+                            <i class="fab fa-linkedin fa-2x"></i>
+                        </a>
+                        <a href="https://github.com/ks9067" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-Blue-500 footer-icon" aria-label="GitHub Profile">
+                            <i class="fab fa-github fa-2x"></i>
+                        </a>
+                        <a href="mailto:kunalsugandhi007@gmail.com" class="text-gray-400 hover:text-Blue-500 footer-icon" aria-label="Email Me">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+                <p class="text-gray-400">&copy; <span id="currentYear"></span> Kunal Sugandhi. All rights reserved.</p>
+                <p class="text-sm text-Blue-500">Crafted with <span class="text-red-500">&hearts;</span>, Three.js & TailwindCSS</p>
+                 </div>
+        </footer>
+    </div> 
+
+    <div id="geminiModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="modal-title">✨ Project Idea Spark ✨</h3>
+                <button id="closeGeminiModalBtn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="geminiResponseContainer" class="text-gray-300 space-y-4">
+                <p>Click the button below to get some fresh project ideas tailored to your skills!</p>
+            </div>
+            <div id="geminiLoader" class="hidden loader"></div> <div class="mt-6 flex justify-end space-x-3">
+                <button id="getProjectIdeasBtn" class="btn-gemini">
+                    <i class="fas fa-wand-magic-sparkles"></i> Get Ideas!
+                </button>
+                <button id="closeGeminiModalBtnBottom" class="btn-close-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="backToTopBtn" title="Go to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // --- Three.js Background Animation ---
+        let scene, camera, renderer, starGeo, stars, sun, planets = [], moon, milkyWay; 
+        const canvasContainer = document.getElementById('three-canvas-container');
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, canvasContainer.offsetWidth / canvasContainer.offsetHeight, 0.1, 3000); 
+            camera.position.set(0, 60, baseCameraZ + 50); 
+            camera.lookAt(scene.position); 
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); 
+            renderer.setSize(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+            renderer.setClearColor(0x000000, 0); 
+            canvasContainer.appendChild(renderer.domElement); 
+            const starVertices = [];
+            for (let i = 0; i < 8000; i++) { 
+                const x = THREE.MathUtils.randFloatSpread(1200); 
+                const y = THREE.MathUtils.randFloatSpread(1200);
+                const z = THREE.MathUtils.randFloatSpread(1200);
+                starVertices.push(x, y, z);
+            }
+            starGeo = new THREE.BufferGeometry();
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.4, transparent: true, opacity: 0.7, sizeAttenuation: true });
+            stars = new THREE.Points(starGeo, starMaterial);
+            scene.add(stars);
+            const milkyWayParticles = [];
+            const milkyWayColors = [];
+            const numMilkyWayStars = 20000;
+            for (let i = 0; i < numMilkyWayStars; i++) {
+                const r = Math.random() * 800 + 200; 
+                const theta = Math.random() * Math.PI * 2; 
+                const phi = (Math.random() - 0.5) * 0.2; 
+                const x = r * Math.cos(theta) * Math.cos(phi);
+                const y = r * Math.sin(phi) + (Math.random()-0.5) * 50; 
+                const z = r * Math.sin(theta) * Math.cos(phi) - 500; 
+                milkyWayParticles.push(x, y, z);
+                const color = new THREE.Color();
+                const rand = Math.random();
+                if (rand < 0.6) color.setHSL(0.6, 0.8, Math.random() * 0.3 + 0.6); 
+                else if (rand < 0.85) color.setHSL(0.15, 0.7, Math.random() * 0.2 + 0.7); 
+                else color.setHSL(0, 0, Math.random() * 0.4 + 0.5); 
+                milkyWayColors.push(color.r, color.g, color.b);
+            }
+            const milkyWayGeometry = new THREE.BufferGeometry();
+            milkyWayGeometry.setAttribute('position', new THREE.Float32BufferAttribute(milkyWayParticles, 3));
+            milkyWayGeometry.setAttribute('color', new THREE.Float32BufferAttribute(milkyWayColors, 3));
+            const milkyWayMaterial = new THREE.PointsMaterial({ size: 0.3, transparent: true, opacity: 0.35, vertexColors: true, blending: THREE.AdditiveBlending, depthWrite: false });
+            milkyWay = new THREE.Points(milkyWayGeometry, milkyWayMaterial);
+            milkyWay.rotation.x = 0.2; 
+            milkyWay.rotation.y = 0.1;
+            scene.add(milkyWay);
+            const sunGeometry = new THREE.SphereGeometry(15, 32, 32); 
+            const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffdd88, emissive: 0xffaa00, emissiveIntensity: 1 });
+            sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            scene.add(sun);
+            const sunLight = new THREE.PointLight(0xffddaa, 2, 1000, 1); 
+            sun.add(sunLight); 
+            const planetData = [
+                { name: "Mercury", size: 2, color: 0x888888, orbitRadius: 35, baseOrbitSpeed: 0.02, rotationSpeed: THREE.MathUtils.randFloat(0.005, 0.015), orbitPhase: Math.random() * Math.PI * 2, emissiveColor: 0x333333 },
+                { name: "Venus", size: 3.5, color: 0xeeccaa, orbitRadius: 55, baseOrbitSpeed: 0.015, rotationSpeed: THREE.MathUtils.randFloat(0.003, 0.008), orbitPhase: Math.random() * Math.PI * 2, emissiveColor: 0x443322 },
+                { name: "Earth", size: 4, color: 0x6699ff, orbitRadius: 80, baseOrbitSpeed: 0.01, rotationSpeed: THREE.MathUtils.randFloat(0.015, 0.025), orbitPhase: Math.random() * Math.PI * 2, emissiveColor: 0x223366 },
+                { name: "Mars", size: 3, color: 0xff6633, orbitRadius: 110, baseOrbitSpeed: 0.008, rotationSpeed: THREE.MathUtils.randFloat(0.01, 0.02), orbitPhase: Math.random() * Math.PI * 2, emissiveColor: 0x552211 },
+            ];
+            planetData.forEach(data => {
+                const planetGeometry = new THREE.SphereGeometry(data.size, 32, 32);
+                const planetMaterial = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.8, metalness: 0.1, emissive: data.emissiveColor, emissiveIntensity: 0.3 });
+                const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+                planet.name = data.name;
+                planet.userData = data; 
+                const orbitPathGeometry = new THREE.TorusGeometry(data.orbitRadius, 0.1, 16, 100);
+                const orbitPathMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.3 });
+                const orbitPath = new THREE.Mesh(orbitPathGeometry, orbitPathMaterial);
+                orbitPath.rotation.x = Math.PI / 2; 
+                scene.add(orbitPath);
+                planets.push(planet);
+                scene.add(planet);
+                if (data.name === "Earth") {
+                    const moonGeometry = new THREE.SphereGeometry(1, 16, 16); 
+                    const moonMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.9, emissive: 0x222222, emissiveIntensity: 0.2 });
+                    moon = new THREE.Mesh(moonGeometry, moonMaterial);
+                    moon.userData = { orbitRadius: 8, baseOrbitSpeed: 0.05, rotationSpeed: THREE.MathUtils.randFloat(0.005, 0.015), orbitPhase: Math.random() * Math.PI * 2 }; 
+                    planet.add(moon); 
+                }
+            });
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.2); 
+            scene.add(ambientLight);
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            window.addEventListener('resize', onWindowResizeThreeJS, false); 
+            onWindowResizeThreeJS(); 
+        }
+        let mouseX = 0, mouseY = 0; 
+        const windowHalfX = window.innerWidth / 2; 
+        const windowHalfY = window.innerHeight / 2; 
+        const baseCameraZ = 150; 
+        const zoomAmplitude = 40; 
+        const zoomFrequency = 0.1; 
+        const clock = new THREE.Clock(); 
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) / 10; 
+            mouseY = (event.clientY - windowHalfY) / 10;
+        }
+        function onWindowResizeThreeJS() { 
+            if (camera && renderer && canvasContainer) {
+                camera.aspect = canvasContainer.offsetWidth / canvasContainer.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+            }
+        }
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+            const delta = clock.getDelta(); 
+            const elapsedTime = clock.getElapsedTime(); 
+            if (stars) { stars.rotation.y += 0.00005; stars.rotation.x += 0.00002; }
+            if (milkyWay) { milkyWay.rotation.y += 0.00003; milkyWay.rotation.z += 0.00001; }
+            if (sun) { sun.rotation.y += 0.0005; }
+            planets.forEach(planet => {
+                planet.rotation.y += planet.userData.rotationSpeed * delta * 20; 
+                const speedVariationFactor = 0.05; 
+                const speedVariationFrequency = 0.05; 
+                const currentOrbitSpeed = planet.userData.baseOrbitSpeed * (1 + (Math.sin(elapsedTime * speedVariationFrequency * (planets.indexOf(planet) + 1)) * speedVariationFactor));
+                planet.position.x = Math.cos(elapsedTime * currentOrbitSpeed + planet.userData.orbitPhase) * planet.userData.orbitRadius;
+                planet.position.z = Math.sin(elapsedTime * currentOrbitSpeed + planet.userData.orbitPhase) * planet.userData.orbitRadius;
+                planet.position.y = 0; 
+                if (planet.name === "Earth" && moon) {
+                    moon.rotation.y += moon.userData.rotationSpeed * delta * 20;
+                    const currentMoonOrbitSpeed = moon.userData.baseOrbitSpeed * (1 + (Math.sin(elapsedTime * 0.1) * 0.05)); 
+                    moon.position.x = Math.cos(elapsedTime * currentMoonOrbitSpeed * 5 + moon.userData.orbitPhase) * moon.userData.orbitRadius; 
+                    moon.position.z = Math.sin(elapsedTime * currentMoonOrbitSpeed * 5 + moon.userData.orbitPhase) * moon.userData.orbitRadius;
+                    moon.position.y = 0;
+                }
+            });
+            if (camera) {
+                camera.position.z = baseCameraZ + Math.sin(elapsedTime * zoomFrequency) * zoomAmplitude; 
+                camera.position.x += (mouseX - camera.position.x) * 0.0005; 
+                camera.position.y += (-mouseY - camera.position.y) * 0.0005; 
+                camera.lookAt(scene.position); 
+            }
+            if (renderer && scene && camera) { renderer.render(scene, camera); }
+        }
+
+        // --- General Page JavaScript ---
+        document.addEventListener('DOMContentLoaded', function() {
+            initThreeJS();
+            animateThreeJS();
+
+            const newHeader = document.getElementById('new-cool-header'); 
+            const backToTopButton = document.getElementById('backToTopBtn');
+            const openGeminiModalBtn = document.getElementById('openGeminiModalBtn');
+            const mobileMenuButtonNew = document.getElementById('mobile-menu-button-new'); 
+            const mobileMenuNew = document.getElementById('mobile-menu-new'); 
+            const currentYearEl = document.getElementById('currentYear');
+            const heroNameSpan = document.getElementById('hero-name'); 
+            
+            const contentWrapper = document.querySelector('.content-wrapper');
+            const sections = Array.from(document.querySelectorAll('.content-section[id]')); 
+            const navLinksDesktop = document.querySelectorAll('#new-cool-header nav .new-nav-link');
+            const navLinksMobile = document.querySelectorAll('#mobile-menu-new .new-nav-link-mobile');
+            let scrollTimeout; 
+            let navClickScroll = false; 
+
+            if (newHeader) { 
+                 setTimeout(() => newHeader.classList.add('loaded'), 600); 
+            }
+
+            if (backToTopButton && contentWrapper) {
+                contentWrapper.addEventListener('scroll', () => {
+                    backToTopButton.classList.toggle('show', contentWrapper.scrollTop > 300);
+                });
+                backToTopButton.addEventListener('click', () => {
+                    contentWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            
+            if (mobileMenuButtonNew && mobileMenuNew) { 
+                mobileMenuButtonNew.addEventListener('click', () => {
+                    mobileMenuNew.classList.toggle('hidden');
+                    const isOpen = !mobileMenuNew.classList.contains('hidden');
+                    mobileMenuButtonNew.innerHTML = isOpen 
+                        ? `<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>` 
+                        : `<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+                });
+                mobileMenuNew.querySelectorAll('a.new-nav-link-mobile').forEach(link => { 
+                    link.addEventListener('click', () => {
+                        mobileMenuNew.classList.add('hidden');
+                        mobileMenuButtonNew.innerHTML = `<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`; 
+                    });
+                });
+            }
+            
+            if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+
+            const animatedElements = document.querySelectorAll('.animate-on-scroll'); 
+            const observerOptions = { root: contentWrapper, rootMargin: '0px', threshold: 0.1 };
+
+            if (typeof IntersectionObserver !== 'undefined' && contentWrapper) {
+                const elementObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                           entry.target.classList.add('is-visible');
+                        }
+                    });
+                }, observerOptions); 
+                animatedElements.forEach(el => elementObserver.observe(el));
+            } else { 
+                animatedElements.forEach(el => el.classList.add('is-visible'));
+            }
+
+            function initCustomCursorEffect() {
+                const particleColors = ["#a855f7", "#c084fc", "#e9d5ff", "#ffffff"];
+                
+                function createParticle(x, y) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('cursor-particle');
+                    document.body.appendChild(particle);
+                    const size = Math.random() * 6 + 3;
+                    const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.backgroundColor = color;
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    void particle.offsetWidth; 
+                    const randomX = (Math.random() - 0.5) * 30;
+                    const randomY = (Math.random() - 0.5) * 30;
+                    particle.style.opacity = '0';
+                    particle.style.transform = `translate(-50%, -50%) translate(${randomX}px, ${randomY}px) scale(0.1)`;
+                    setTimeout(() => {
+                        if (particle.parentNode) particle.parentNode.removeChild(particle);
+                    }, 600);
+                }
+
+                document.body.addEventListener('mousemove', function(e) {
+                    createParticle(e.pageX, e.pageY);
+                });
+
+                document.body.addEventListener('touchmove', function(e) {
+                    // Create particle for the first touch point
+                    if (e.touches.length > 0) {
+                        const touch = e.touches[0];
+                        createParticle(touch.pageX, touch.pageY);
+                    }
+                }, { passive: true }); // Use passive for better scroll performance on touch
+            }
+            initCustomCursorEffect();
+
+            function initKonamiCode() {
+                const konamiSequence = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a']; 
+                let userInputSequence = [];
+                const targetNameElement = document.getElementById('hero-name'); 
+                document.addEventListener('keydown', function(e) {
+                    if (!targetNameElement) return;
+                    const key = e.key.toLowerCase(); 
+                    userInputSequence.push(key);
+                    if (userInputSequence.length > konamiSequence.length) {
+                        userInputSequence.shift(); 
+                    }
+                    if (userInputSequence.length === konamiSequence.length && userInputSequence.every((val, index) => val === konamiSequence[index])) {
+                        console.log("Konami Code Activated!"); 
+                        targetNameElement.classList.add('konami-name-effect');
+                        setTimeout(() => {
+                            targetNameElement.classList.remove('konami-name-effect');
+                        }, 800); 
+                        userInputSequence = []; 
+                    }
+                });
+            }
+            initKonamiCode();
+
+            const filterButtonsContainer = document.getElementById('project-filter-buttons');
+            const projectCardElements = document.querySelectorAll('#project-grid .project-card'); 
+
+            if (filterButtonsContainer && projectCardElements.length > 0) {
+                filterButtonsContainer.addEventListener('click', function(e) {
+                    if (e.target && e.target.matches('button.filter-button')) {
+                        const filterValue = e.target.dataset.filter;
+                        filterButtonsContainer.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        projectCardElements.forEach(card => {
+                            const tags = card.dataset.tags ? card.dataset.tags.split(' ') : [];
+                            if (filterValue === 'all' || tags.includes(filterValue)) {
+                                card.classList.remove('project-card-hidden');
+                                // Re-trigger animation
+                                card.classList.remove('is-visible');
+                                void card.offsetWidth; // Force reflow
+                                requestAnimationFrame(() => { // Use rAF for smoother re-trigger
+                                   card.classList.add('is-visible');
+                                });
+                            } else {
+                                card.classList.add('project-card-hidden');
+                                card.classList.remove('is-visible'); // Ensure it's not marked as visible if hidden
+                            }
+                        });
+                    }
+                });
+            }
+
+            function updateActiveLinkOnScrollLogic() {
+                if (navClickScroll) return; 
+                if (!contentWrapper || !newHeader || sections.length === 0) return;
+                const headerHeight = newHeader.offsetHeight;
+                const viewportCenterLine = headerHeight + (contentWrapper.clientHeight - headerHeight) * 0.3;
+                let currentSectionId = '';
+                let minDistanceToCenter = Infinity;
+                sections.forEach(section => {
+                    const sectionRect = section.getBoundingClientRect();
+                    const sectionTopRelativeToViewport = sectionRect.top;
+                    const sectionBottomRelativeToViewport = sectionRect.bottom;
+                    if (sectionTopRelativeToViewport < contentWrapper.clientHeight && sectionBottomRelativeToViewport > headerHeight) {
+                        const effectiveSectionTop = Math.max(sectionTopRelativeToViewport, headerHeight);
+                        const distance = Math.abs(effectiveSectionTop - viewportCenterLine);
+                        if (distance < minDistanceToCenter) {
+                            minDistanceToCenter = distance;
+                            currentSectionId = section.id;
+                        } else if (distance === minDistanceToCenter && sectionTopRelativeToViewport > headerHeight) {
+                             currentSectionId = section.id;
+                        }
+                    }
+                });
+                if (contentWrapper.scrollTop < 50 && sections.length > 0) {
+                    currentSectionId = sections[0].id;
+                } else if (contentWrapper.scrollTop + contentWrapper.clientHeight >= contentWrapper.scrollHeight - 5 && sections.length > 0) {
+                     currentSectionId = sections[sections.length - 1].id;
+                }
+                [navLinksDesktop, navLinksMobile].forEach(linkSet => {
+                    linkSet.forEach(link => {
+                        link.classList.remove('active-link');
+                        if (link.getAttribute('href') === `#${currentSectionId}`) {
+                            link.classList.add('active-link');
+                        }
+                    });
+                });
+            }
+            
+            function throttledUpdateActiveLink() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(updateActiveLinkOnScrollLogic, 100); 
+            }
+
+            if (contentWrapper) {
+                contentWrapper.addEventListener('scroll', throttledUpdateActiveLink);
+                setTimeout(updateActiveLinkOnScrollLogic, 300); 
+            }
+            window.addEventListener('resize', () => { 
+                if (contentWrapper) setTimeout(updateActiveLinkOnScrollLogic, 300);
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    navClickScroll = true; 
+
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    document.querySelectorAll('.content-section.navigated-to-section-effect').forEach(sec => {
+                        if (sec !== targetElement) { 
+                            sec.classList.remove('navigated-to-section-effect');
+                            const payload = sec.querySelector('.section-entry-payload');
+                            if(payload) {
+                               payload.style.animation = 'none'; 
+                               void payload.offsetWidth; 
+                               payload.style.opacity = ''; 
+                               payload.style.transform = ''; 
+                            }
+                        }
+                    });
+
+                    if (targetElement && contentWrapper && newHeader) {
+                        const headerOffset = newHeader.offsetHeight;
+                        let cumulativeOffsetTop = 0;
+                        let currentElement = targetElement;
+                        while(currentElement && currentElement !== contentWrapper) {
+                            cumulativeOffsetTop += currentElement.offsetTop;
+                            currentElement = currentElement.offsetParent;
+                        }
+                        if (!currentElement && targetElement.offsetParent !== contentWrapper) {
+                             const targetTopInViewport = targetElement.getBoundingClientRect().top;
+                             const contentWrapperTopInViewport = contentWrapper.getBoundingClientRect().top;
+                             cumulativeOffsetTop = targetTopInViewport - contentWrapperTopInViewport + contentWrapper.scrollTop;
+                        }
+                        let finalScrollPosition;
+                        if (targetId === "#home") {
+                            finalScrollPosition = 0; 
+                        } else {
+                            finalScrollPosition = cumulativeOffsetTop - headerOffset - 20; 
+                        }
+                        finalScrollPosition = Math.max(0, finalScrollPosition);
+                        finalScrollPosition = Math.min(finalScrollPosition, contentWrapper.scrollHeight - contentWrapper.clientHeight);
+                        
+                        contentWrapper.scrollTo({
+                            top: finalScrollPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        setTimeout(() => {
+                            if (targetElement.classList.contains('content-section')) {
+                                const payload = targetElement.querySelector('.section-entry-payload');
+                                if (payload) {
+                                    payload.style.opacity = '0'; 
+                                    void payload.offsetWidth; 
+                                }
+                                targetElement.classList.add('navigated-to-section-effect');
+                            }
+                            setTimeout(() => { navClickScroll = false; }, 800); 
+                        }, 150); 
+
+                    } else {
+                        navClickScroll = false; 
+                    }
+                });
+            });
+
+            const heroElements = document.querySelectorAll('.animate-fade-in-down, .animate-fade-in-up');
+            heroElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                if (el.classList.contains('animate-fade-in-down')) el.style.transform = 'translateY(-20px)';
+                else el.style.transform = 'translateY(20px)';
+                const delayValue = getComputedStyle(el).getPropertyValue('animation-delay');
+                const delay = delayValue ? parseFloat(delayValue) * 1000 : 0;
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, delay);
+            });
+            
+            const geminiModal = document.getElementById('geminiModal'); 
+            const getProjectIdeasBtn = document.getElementById('getProjectIdeasBtn');
+            const geminiResponseContainer = document.getElementById('geminiResponseContainer');
+            const geminiLoader = document.getElementById('geminiLoader');
+            const closeGeminiModalBtn = document.getElementById('closeGeminiModalBtn');
+            const closeGeminiModalBtnBottom = document.getElementById('closeGeminiModalBtnBottom');
+
+            if (openGeminiModalBtn && geminiModal) {
+                openGeminiModalBtn.addEventListener('click', () => geminiModal.classList.add('active'));
+            }
+            if (closeGeminiModalBtn && geminiModal) {
+                closeGeminiModalBtn.addEventListener('click', () => geminiModal.classList.remove('active'));
+            }
+            if (closeGeminiModalBtnBottom && geminiModal) {
+                closeGeminiModalBtnBottom.addEventListener('click', () => geminiModal.classList.remove('active'));
+            }
+            if (geminiModal) {
+                 geminiModal.addEventListener('click', (event) => { 
+                    if (event.target === geminiModal) {
+                        geminiModal.classList.remove('active');
+                    }
+                });
+            }
+
+            if (getProjectIdeasBtn) {
+                getProjectIdeasBtn.addEventListener('click', async () => {
+                    geminiLoader.classList.remove('hidden'); 
+                    getProjectIdeasBtn.disabled = true; 
+                    geminiResponseContainer.innerHTML = ''; 
+                    const userSkills = "Mechanical Engineering, Data Science (Python, R, Machine Learning, SQL, Power BI, Tableau), Frontend Development (React.js, JavaScript), Game Development (Unreal Engine), Android System Customization, Mechanical Design (AutoCAD, CATIA, SolidWorks), Adobe Premiere Pro, and After Effects";
+                    const prompt = `I am a professional with a diverse skill set including: ${userSkills}. Please generate 3 distinct and innovative project ideas that I could undertake to showcase these combined talents. For each project idea, provide a catchy title and a brief 2-3 sentence description highlighting how different skills could be applied. Format each idea clearly, with the title on its own line, perhaps bolded or as a heading.`;
+                    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { contents: chatHistory };
+                    
+                    // IMPORTANT: 
+                    // For use within the Canvas/Preview environment, leave apiKey as "".
+                    // The platform will automatically provide the necessary key for gemini-2.0-flash.
+                    //
+                    // For LOCAL EXECUTION (after downloading this file):
+                    // 1. Get your own Gemini API key from Google AI Studio.
+                    // 2. Replace the empty string below with your actual API key.
+                    //    e.g., const apiKey = "AIzaSyYOUR_REAL_API_KEY_HERE";
+                    const apiKey = ""; // For Canvas/Preview. Change for local use.
+
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!response.ok) { 
+                             const errorBody = await response.text(); 
+                            throw new Error(`API request failed with status ${response.status} ${response.statusText}. Response: ${errorBody}`);
+                        }
+                        const result = await response.json();
+                        geminiLoader.classList.add('hidden'); 
+                        getProjectIdeasBtn.disabled = false; 
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            const ideas = [];
+                            const rawIdeasSegments = text.split(/\n\s*\*\*(.*?)\*\*\s*\n|\n\s*([A-Za-z0-9\s()]+:)\s*\n/).filter(Boolean);
+                            let currentTitle = null;
+                            for (let i = 0; i < rawIdeasSegments.length; i++) {
+                                let segment = rawIdeasSegments[i].trim();
+                                if (segment.endsWith(':') && segment.length < 100 && !currentTitle) {
+                                    currentTitle = segment.slice(0, -1);
+                                } else if (rawIdeasSegments[i-1] && rawIdeasSegments[i-1].startsWith('**') && rawIdeasSegments[i-1].endsWith('**')) {
+                                     currentTitle = rawIdeasSegments[i-1].replace(/\*\*/g, '').trim();
+                                } else if (currentTitle) {
+                                    ideas.push({ title: currentTitle, description: segment.replace(/^\d+\.\s*/, '').trim() });
+                                    currentTitle = null;
+                                } else if (!currentTitle && segment.length > 20) { 
+                                     ideas.push({ title: "Project Idea", description: segment.replace(/^\d+\.\s*/, '').trim() });
+                                }
+                            }
+                            if (ideas.length === 0) {
+                                const simpleSplit = text.split(/\n\s*\n+/);
+                                simpleSplit.forEach(ideaText => {
+                                    const lines = ideaText.split('\n').map(l => l.trim()).filter(l => l);
+                                    if (lines.length > 0) {
+                                        const title = lines[0].replace(/\*\*/g, '').replace(/^\d+\.\s*/, '').trim();
+                                        const description = lines.slice(1).join(' ').trim();
+                                        if (description) ideas.push({title, description});
+                                        else ideas.push({title: "Project Idea", description: title});
+                                    }
+                                });
+                            }
+                            if (ideas.length > 0) {
+                                ideas.slice(0,3).forEach(idea => {
+                                    const ideaCard = document.createElement('div');
+                                    ideaCard.className = 'idea-card';
+                                    ideaCard.innerHTML = `
+                                        <h4 class="idea-title">${idea.title}</h4>
+                                        <p class="idea-description">${idea.description.replace(/\n/g, '<br>')}</p>
+                                    `;
+                                    geminiResponseContainer.appendChild(ideaCard);
+                                });
+                            } else { 
+                                geminiResponseContainer.innerHTML = '<p>Could not clearly parse project ideas. Raw response:</p><pre style="white-space: pre-wrap; word-wrap: break-word; color: #ccc;">' + text + '</pre>';
+                            }
+                        } else { 
+                            geminiResponseContainer.innerHTML = '<p>Sorry, I couldn\'t generate project ideas at the moment. The response from the AI was not as expected.</p>';
+                            console.error("Unexpected Gemini API response structure:", result);
+                        }
+                    } catch (error) { 
+                        geminiLoader.classList.add('hidden');
+                        getProjectIdeasBtn.disabled = false;
+                        geminiResponseContainer.innerHTML = `<p>An error occurred: ${error.message}. Please check the console for details.</p>`;
+                        console.error("Error fetching from Gemini API:", error);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
